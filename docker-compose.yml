@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: visitas_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-visitas}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-visitas_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-visitas_domiciliarias}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-visitas} -d ${POSTGRES_DB:-visitas_domiciliarias}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    image: node:24-alpine
+    container_name: visitas_api
+    working_dir: /workspace
+    command: sh -c "corepack enable && pnpm install && pnpm dev:api"
+    env_file:
+      - .env
+    ports:
+      - "${API_PORT:-4000}:4000"
+    volumes:
+      - .:/workspace
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    image: node:24-alpine
+    container_name: visitas_web
+    working_dir: /workspace
+    command: sh -c "corepack enable && pnpm install && pnpm dev:web -- --host 0.0.0.0"
+    env_file:
+      - .env
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/workspace
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
