@@ -37,6 +37,7 @@ build/
 
 ## IA ##
 .superpowers/
+docs/superpowers/
 
 ### Agents ###
 .codex/
