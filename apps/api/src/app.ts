@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 import helmet from "helmet";
+import { createDefaultAuthRouter } from "./modules/auth/auth.module.js";
 import { healthRouter } from "./modules/health/health.routes.js";
 import { errorHandler } from "./shared/error-handler.js";
 
@@ -12,6 +13,7 @@ export function createApp() {
   app.use(express.json());
 
   app.use("/api/v1", healthRouter);
+  app.use("/api/v1/auth", createDefaultAuthRouter());
 
   app.use(errorHandler);
 
