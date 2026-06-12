@@ -2,7 +2,7 @@
   "name": "visitas-domiciliarias",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.5.2",
+  "packageManager": "pnpm@11.5.3",
   "scripts": {
     "dev": "pnpm --parallel --filter @visitas/api --filter @visitas/web dev",
     "dev:api": "pnpm --filter @visitas/api dev",
