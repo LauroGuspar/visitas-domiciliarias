@@ -112,20 +112,18 @@ En V1:
 - El flujo de eliminación lógica con motivo aplica a `actor_social` y `miembro_grupo`.
 - `sector` puede eliminarse según la regla específica del módulo.
 
-Flujo V1:
+Flujo de Eliminación de Registros (Regla General):
+Cuando se intente eliminar un registro, el flujo definido es el siguiente:
+1. Se abre un modal pidiendo motivo de eliminación.
+2. Luego de definir el motivo, se muestra el mensaje:
+   - "Se ha notificado al administrador"
+3. Después el administrador verá si aprueba o rechaza la eliminación.
 
-1. Usuario intenta eliminar.
-2. Sistema solicita motivo obligatorio.
-3. Guarda `archivado`, `deleted_at` y `motivo_eliminacion`.
-4. Muestra mensaje de notificación al administrador general.
-5. No envía notificación real todavía.
+No inventar otro flujo distinto.
 
-Fase posterior:
-
-- solicitud pendiente,
-- notificación real,
-- aprobación/rechazo del administrador general,
-- historial de decisión.
+Implementación por Fases (V1 vs V2):
+- En V1: Cuando el usuario intente eliminar en la interfaz, se mostrará un modal con el mensaje "Por Implementar" (la funcionalidad de eliminación lógica queda pospuesta para la V2).
+- En V2: Se implementará el flujo completo detallado anteriormente (solicitud de motivo, guardado en base de datos con archivado/deleted_at/motivo, mensaje de notificación y aprobación/rechazo del administrador general).
 
 ## 10. Capacidades administrativas por módulo en V1
 

@@ -127,10 +127,12 @@ Funcionalidades:
 
 Regla de eliminación:
 
-- Al eliminar, el sistema pide motivo obligatorio.
-- Guarda `archivado = true`, `deleted_at = now()` y `motivo_eliminacion`.
-- Muestra mensaje: “Se notificó al administrador general para su revisión.”
-- En V1 no hay notificación real ni aprobación funcional.
+- En la interfaz V1, cuando se intente realizar una eliminación, se mostrará un modal con el mensaje "Por Implementar".
+- El flujo de eliminación real (aplazado a la V2) constará de:
+  1. Apertura de un modal pidiendo el motivo obligatorio de eliminación.
+  2. Guardado de `archivado = true`, `deleted_at = now()` y `motivo_eliminacion`.
+  3. Muestra del mensaje: "Se ha notificado al administrador".
+  4. Evaluación del administrador para su posterior aprobación o rechazo.
 
 ### 9. Sectores
 
