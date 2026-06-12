@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { LuPhone, LuMail } from "react-icons/lu";
 import { listCargos } from "../../cargos-miembro-grupo/cargos-api";
 import type { CargoMiembroRecord } from "../../cargos-miembro-grupo/cargos-types";
 import {
@@ -356,16 +357,19 @@ export function GrupoDetailPage() {
           {/* Main Tabs Panel */}
           {grupo.estado === "VALIDADO" ? (
             <div className="admin-content-card">
-            <div style={{ display: "flex", borderBottom: "1px solid var(--color-border, #ccc)", marginBottom: "1.5rem" }}>
+            <div style={{ display: "flex", borderBottom: "1px solid var(--border)", marginBottom: "1.5rem" }}>
               <button
                 onClick={() => setActiveTab("estab")}
                 style={{
                   padding: "1rem 2rem",
                   border: "none",
                   background: "none",
-                  fontWeight: activeTab === "estab" ? "bold" : "normal",
-                  borderBottom: activeTab === "estab" ? "3px solid var(--color-primary, #2e7d32)" : "none",
+                  color: activeTab === "estab" ? "var(--primary)" : "var(--muted)",
+                  fontWeight: activeTab === "estab" ? "700" : "500",
+                  borderBottom: activeTab === "estab" ? "3px solid var(--primary)" : "3px solid transparent",
                   cursor: "pointer",
+                  fontSize: "0.95rem",
+                  transition: "all 160ms ease",
                 }}
                 type="button"
               >
@@ -377,9 +381,12 @@ export function GrupoDetailPage() {
                   padding: "1rem 2rem",
                   border: "none",
                   background: "none",
-                  fontWeight: activeTab === "miembro" ? "bold" : "normal",
-                  borderBottom: activeTab === "miembro" ? "3px solid var(--color-primary, #2e7d32)" : "none",
+                  color: activeTab === "miembro" ? "var(--primary)" : "var(--muted)",
+                  fontWeight: activeTab === "miembro" ? "700" : "500",
+                  borderBottom: activeTab === "miembro" ? "3px solid var(--primary)" : "3px solid transparent",
                   cursor: "pointer",
+                  fontSize: "0.95rem",
+                  transition: "all 160ms ease",
                 }}
                 type="button"
               >
@@ -473,8 +480,18 @@ export function GrupoDetailPage() {
                               "—"}
                           </td>
                           <td>
-                            {m.celular ? <div>📱 {m.celular}</div> : null}
-                            {m.email ? <div>✉️ {m.email}</div> : null}
+                            {m.celular ? (
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px", margin: "2px 0" }}>
+                                <LuPhone style={{ color: "var(--muted)", flexShrink: 0 }} size={14} />
+                                <span>{m.celular}</span>
+                              </div>
+                            ) : null}
+                            {m.email ? (
+                              <div style={{ display: "flex", alignItems: "center", gap: "6px", margin: "2px 0" }}>
+                                <LuMail style={{ color: "var(--muted)", flexShrink: 0 }} size={14} />
+                                <span style={{ textTransform: "none" }}>{m.email}</span>
+                              </div>
+                            ) : null}
                             {!m.celular && !m.email ? "—" : null}
                           </td>
                           <td>
