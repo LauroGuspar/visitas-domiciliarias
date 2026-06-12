@@ -18,7 +18,7 @@ export class EntidadesService {
     );
     if (existing)
       throw new HttpError(409, "Ya existe una entidad con ese tipo y código");
-    return this.repository.create({ ...input, activo: true });
+    return this.repository.create({ ...input, activo: true, archivado: false });
   }
   async update(id: string, input: EntidadUpdateInput): Promise<EntidadRecord> {
     await this.ensureExists(id);
@@ -27,6 +27,10 @@ export class EntidadesService {
   async setActivo(id: string, activo: boolean): Promise<EntidadRecord> {
     await this.ensureExists(id);
     return this.repository.setActivo(id, activo);
+  }
+  async archive(id: string): Promise<EntidadRecord> {
+    await this.ensureExists(id);
+    return this.repository.archive(id);
   }
   private async ensureExists(id: string) {
     if (!(await this.repository.findById(id)))

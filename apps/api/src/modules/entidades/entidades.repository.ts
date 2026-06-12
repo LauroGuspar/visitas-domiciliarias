@@ -9,6 +9,7 @@ export class PrismaEntidadesRepository implements EntidadesRepository {
   constructor(private readonly prisma: PrismaClient) {}
   list(): Promise<EntidadRecord[]> {
     return this.prisma.entidad.findMany({
+      where: { archivado: false },
       orderBy: [{ tipoEntidad: "asc" }, { nombre: "asc" }],
     }) as Promise<EntidadRecord[]>;
   }
@@ -20,7 +21,9 @@ export class PrismaEntidadesRepository implements EntidadesRepository {
       where: { tipoEntidad_codigo: { tipoEntidad, codigo } },
     });
   }
-  create(data: EntidadCreateInput & { activo: true }): Promise<EntidadRecord> {
+  create(
+    data: EntidadCreateInput & { activo: true; archivado: false },
+  ): Promise<EntidadRecord> {
     return this.prisma.entidad.create({ data }) as Promise<EntidadRecord>;
   }
   update(id: string, data: EntidadUpdateInput): Promise<EntidadRecord> {
@@ -33,6 +36,12 @@ export class PrismaEntidadesRepository implements EntidadesRepository {
     return this.prisma.entidad.update({
       where: { id },
       data: { activo },
+    }) as Promise<EntidadRecord>;
+  }
+  archive(id: string): Promise<EntidadRecord> {
+    return this.prisma.entidad.update({
+      where: { id },
+      data: { archivado: true },
     }) as Promise<EntidadRecord>;
   }
 }
