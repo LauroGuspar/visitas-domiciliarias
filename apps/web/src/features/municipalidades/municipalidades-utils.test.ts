@@ -46,6 +46,13 @@ describe("municipalidades utils", () => {
     );
   });
 
+  it("filters by status and tipo", () => {
+    expect(filterMunicipalidades(municipalidades, "", "active")).toHaveLength(1);
+    expect(filterMunicipalidades(municipalidades, "", "inactive")).toHaveLength(1);
+    expect(filterMunicipalidades(municipalidades, "", "", "PROVINCIAL")).toHaveLength(1);
+    expect(filterMunicipalidades(municipalidades, "", "active", "PROVINCIAL")).toHaveLength(0);
+  });
+
   it("builds the backend payload trimming text and coercing priority", () => {
     const form: MunicipalidadFormState = {
       ubigeo: " 140106 ",

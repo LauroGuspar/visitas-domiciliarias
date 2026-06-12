@@ -1,18 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { ApiError } from "../../../shared/api";
 import {
-  createMunicipalidad,
   listMunicipalidades,
   setMunicipalidadActivo,
-  updateMunicipalidad,
 } from "../municipalidades-api";
-import { getMunicipalidadFormTitle } from "../municipalidades-form";
 import type {
   MunicipalidadFormState,
   MunicipalidadRecord,
 } from "../municipalidades-types";
 import {
-  buildMunicipalidadPayload,
   emptyMunicipalidadForm,
   filterMunicipalidades,
   formatTipoMunicipalidad,
@@ -27,17 +23,21 @@ export function MunicipalidadesPage() {
   const [form, setForm] = useState<MunicipalidadFormState>(
     emptyMunicipalidadForm,
   );
-  const [editingMunicipalidad, setEditingMunicipalidad] =
+  const [viewingMunicipalidad, setViewingMunicipalidad] =
     useState<MunicipalidadRecord | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Filter states
+  const [showFilters, setShowFilters] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<"active" | "inactive" | "">("");
+  const [tipoFilter, setTipoFilter] = useState<"PROVINCIAL" | "DISTRITAL" | "">("");
+
   const filteredMunicipalidades = useMemo(
-    () => filterMunicipalidades(municipalidades, query),
-    [municipalidades, query],
+    () => filterMunicipalidades(municipalidades, query, statusFilter, tipoFilter),
+    [municipalidades, query, statusFilter, tipoFilter],
   );
 
   useEffect(() => {
@@ -57,16 +57,8 @@ export function MunicipalidadesPage() {
     }
   }
 
-  function openCreateForm() {
-    setEditingMunicipalidad(null);
-    setForm(emptyMunicipalidadForm);
-    setError(null);
-    setMessage(null);
-    setIsFormOpen(true);
-  }
-
-  function openEditForm(municipalidad: MunicipalidadRecord) {
-    setEditingMunicipalidad(municipalidad);
+  function openDetails(municipalidad: MunicipalidadRecord) {
+    setViewingMunicipalidad(municipalidad);
     setForm(toMunicipalidadForm(municipalidad));
     setError(null);
     setMessage(null);
@@ -75,41 +67,8 @@ export function MunicipalidadesPage() {
 
   function closeForm() {
     setIsFormOpen(false);
-    setEditingMunicipalidad(null);
+    setViewingMunicipalidad(null);
     setForm(emptyMunicipalidadForm);
-  }
-
-  function updateForm<K extends keyof MunicipalidadFormState>(
-    field: K,
-    value: MunicipalidadFormState[K],
-  ) {
-    setForm((current) => ({ ...current, [field]: value }));
-  }
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSaving(true);
-    setError(null);
-    setMessage(null);
-
-    try {
-      const payload = buildMunicipalidadPayload(form);
-      const saved = editingMunicipalidad
-        ? await updateMunicipalidad(editingMunicipalidad.id, payload)
-        : await createMunicipalidad(payload);
-
-      setMunicipalidades((current) => upsertMunicipalidad(current, saved));
-      setMessage(
-        editingMunicipalidad
-          ? "Municipalidad actualizada correctamente."
-          : "Municipalidad creada correctamente.",
-      );
-      closeForm();
-    } catch (saveError) {
-      setError(getErrorMessage(saveError));
-    } finally {
-      setIsSaving(false);
-    }
   }
 
   async function handleToggleActivo(municipalidad: MunicipalidadRecord) {
@@ -148,8 +107,7 @@ export function MunicipalidadesPage() {
         <div>
           <h1>Municipalidades</h1>
           <p>
-            Gestiona y consulta las municipalidades distritales y provinciales
-            registradas en el sistema.
+            Consulta las municipalidades distritales y provinciales registradas en el sistema.
           </p>
         </div>
         <div className="breadcrumb-card" aria-label="Ruta actual">
@@ -172,21 +130,58 @@ export function MunicipalidadesPage() {
           </label>
 
           <div className="admin-actions-group">
-            <button className="admin-button is-ghost" type="button">
+            <button
+              className={`admin-button is-ghost${showFilters ? " is-active" : ""}`}
+              onClick={() => setShowFilters(!showFilters)}
+              type="button"
+            >
               Filtros
             </button>
             <button className="admin-button is-ghost" type="button">
               Exportar
             </button>
-            <button
-              className="admin-button is-primary"
-              onClick={openCreateForm}
-              type="button"
-            >
-              + Nueva municipalidad
-            </button>
           </div>
         </div>
+
+        {showFilters ? (
+          <div
+            className="admin-filters-panel"
+            style={{
+              display: "flex",
+              gap: "1rem",
+              marginBottom: "1rem",
+              padding: "1rem",
+              background: "var(--color-bg-alt, rgba(0,0,0,0.02))",
+              borderRadius: "8px",
+              border: "1px solid var(--color-border, rgba(0,0,0,0.08))",
+            }}
+          >
+            <label className="field" style={{ margin: 0, flex: 1 }}>
+              Estado
+              <select
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+                style={{ width: "100%", marginTop: "0.25rem" }}
+                value={statusFilter}
+              >
+                <option value="">Todos</option>
+                <option value="active">Activo</option>
+                <option value="inactive">Inactivo</option>
+              </select>
+            </label>
+            <label className="field" style={{ margin: 0, flex: 1 }}>
+              Tipo
+              <select
+                onChange={(e) => setTipoFilter(e.target.value as any)}
+                style={{ width: "100%", marginTop: "0.25rem" }}
+                value={tipoFilter}
+              >
+                <option value="">Todos</option>
+                <option value="DISTRITAL">Distrital</option>
+                <option value="PROVINCIAL">Provincial</option>
+              </select>
+            </label>
+          </div>
+        ) : null}
 
         {message ? <p className="alert alert-success">{message}</p> : null}
         {error ? <p className="alert alert-error">{error}</p> : null}
@@ -198,13 +193,13 @@ export function MunicipalidadesPage() {
             className="admin-modal-backdrop"
             role="dialog"
           >
-            <form className="admin-modal" onSubmit={handleSubmit}>
+            <div className="admin-modal">
               <div className="admin-modal-header">
                 <div>
                   <h2 id="municipalidad-modal-title">
-                    {getMunicipalidadFormTitle(editingMunicipalidad)}
+                    Detalles de la Municipalidad
                   </h2>
-                  <p>Completa los datos requeridos por el backend V1.</p>
+                  <p>Información de registro del catálogo nacional.</p>
                 </div>
                 <button
                   aria-label="Cerrar modal"
@@ -219,113 +214,51 @@ export function MunicipalidadesPage() {
               <div className="admin-form-grid">
                 <label className="field">
                   Ubigeo
-                  <input
-                    maxLength={6}
-                    minLength={6}
-                    onChange={(event) => updateForm("ubigeo", event.target.value)}
-                    required
-                    value={form.ubigeo}
-                  />
+                  <input disabled value={form.ubigeo} />
                 </label>
                 <label className="field">
                   Departamento
-                  <input
-                    maxLength={100}
-                    onChange={(event) =>
-                      updateForm("departamento", event.target.value)
-                    }
-                    required
-                    value={form.departamento}
-                  />
+                  <input disabled value={form.departamento} />
                 </label>
                 <label className="field">
                   Provincia
-                  <input
-                    maxLength={100}
-                    onChange={(event) =>
-                      updateForm("provincia", event.target.value)
-                    }
-                    required
-                    value={form.provincia}
-                  />
+                  <input disabled value={form.provincia} />
                 </label>
                 <label className="field">
                   Distrito
-                  <input
-                    maxLength={100}
-                    onChange={(event) =>
-                      updateForm("distrito", event.target.value)
-                    }
-                    required
-                    value={form.distrito}
-                  />
+                  <input disabled value={form.distrito} />
                 </label>
                 <label className="field">
                   Código
-                  <input
-                    maxLength={3}
-                    onChange={(event) => updateForm("codigo", event.target.value)}
-                    required
-                    value={form.codigo}
-                  />
+                  <input disabled value={form.codigo} />
                 </label>
                 <label className="field admin-form-wide">
                   Municipalidad
-                  <input
-                    maxLength={150}
-                    onChange={(event) => updateForm("nombre", event.target.value)}
-                    required
-                    value={form.nombre}
-                  />
+                  <input disabled value={form.nombre} />
                 </label>
                 <label className="field">
                   Provincial/Distrital
-                  <select
-                    onChange={(event) =>
-                      updateForm(
-                        "tipo",
-                        event.target.value as MunicipalidadFormState["tipo"],
-                      )
-                    }
-                    required
-                    value={form.tipo}
-                  >
+                  <select disabled value={form.tipo}>
                     <option value="DISTRITAL">Distrital</option>
                     <option value="PROVINCIAL">Provincial</option>
                   </select>
                 </label>
                 <label className="field">
                   Prioridad
-                  <input
-                    min={0}
-                    max={32767}
-                    onChange={(event) =>
-                      updateForm("prioridad", event.target.value)
-                    }
-                    required
-                    type="number"
-                    value={form.prioridad}
-                  />
+                  <input disabled type="number" value={form.prioridad} />
                 </label>
               </div>
 
               <div className="admin-form-actions">
                 <button
-                  className="admin-button is-ghost"
+                  className="admin-button is-primary"
                   onClick={closeForm}
                   type="button"
                 >
-                  Cancelar
-                </button>
-                <button
-                  className="admin-button is-primary"
-                  disabled={isSaving}
-                  type="submit"
-                >
-                  {isSaving ? "Guardando..." : "Guardar municipalidad"}
+                  Cerrar
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         ) : null}
 
@@ -378,10 +311,10 @@ export function MunicipalidadesPage() {
                     <div className="admin-row-actions">
                       <button
                         className="admin-icon-button"
-                        onClick={() => openEditForm(municipalidad)}
+                        onClick={() => openDetails(municipalidad)}
                         type="button"
                       >
-                        Editar
+                        Ver
                       </button>
                       <button
                         className="admin-icon-button"

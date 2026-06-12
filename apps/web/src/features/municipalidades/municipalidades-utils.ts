@@ -61,14 +61,28 @@ function normalizeSearch(value: string) {
 export function filterMunicipalidades(
   municipalidades: MunicipalidadRecord[],
   query: string,
+  statusFilter?: "active" | "inactive" | "",
+  tipoFilter?: "PROVINCIAL" | "DISTRITAL" | "",
 ) {
+  let result = municipalidades;
+
+  if (statusFilter === "active") {
+    result = result.filter((m) => m.activo);
+  } else if (statusFilter === "inactive") {
+    result = result.filter((m) => !m.activo);
+  }
+
+  if (tipoFilter) {
+    result = result.filter((m) => m.tipo === tipoFilter);
+  }
+
   const terms = normalizeSearch(query).split(/\s+/).filter(Boolean);
 
   if (terms.length === 0) {
-    return municipalidades;
+    return result;
   }
 
-  return municipalidades.filter((municipalidad) => {
+  return result.filter((municipalidad) => {
     const haystack = normalizeSearch(
       [
         municipalidad.ubigeo,
