@@ -24,6 +24,7 @@
     "express": "^5.2.1",
     "helmet": "latest",
     "jsonwebtoken": "latest",
+    "nodemailer": "^8.0.11",
     "zod": "latest"
   },
   "devDependencies": {
@@ -32,6 +33,7 @@
     "@types/express": "latest",
     "@types/jsonwebtoken": "latest",
     "@types/node": "latest",
+    "@types/nodemailer": "^8.0.1",
     "eslint": "latest",
     "globals": "^17.6.0",
     "prisma": "latest",
