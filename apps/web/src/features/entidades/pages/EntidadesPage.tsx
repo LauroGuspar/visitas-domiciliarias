@@ -230,14 +230,19 @@ export function EntidadesPage() {
               <div className="admin-form-grid">
                 <label className="field">
                   Tipo de Entidad
-                  <input
-                    maxLength={100}
+                  <select
                     onChange={(event) =>
                       updateForm("tipoEntidad", event.target.value)
                     }
                     required
                     value={form.tipoEntidad}
-                  />
+                  >
+                    <option value="">Seleccione...</option>
+                    <option value="Otras entidades públicas">Otras entidades públicas</option>
+                    <option value="Entidad Privada">Entidad Privada</option>
+                    <option value="Municipalidades">Municipalidades</option>
+                    <option value="Establecimiento Salud">Establecimiento Salud</option>
+                  </select>
                 </label>
                 <label className="field">
                   Código
