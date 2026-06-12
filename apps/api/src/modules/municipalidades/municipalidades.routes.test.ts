@@ -6,19 +6,24 @@ import { errorHandler } from "../../shared/error-handler.js";
 import { createMunicipalidadesRouter } from "./municipalidades.routes.js";
 
 let server: Server | null = null;
-const auth: RequestHandler = (_req, _res, next) => next();
+const auth: RequestHandler = (_req, _res, next) => {
+  next();
+};
 
 async function requestJson(
   method: string,
   path: string,
   body: unknown,
-  service: Parameters<typeof createMunicipalidadesRouter>[0],
+  service: unknown,
 ) {
   const app = express();
   app.use(express.json());
   app.use(
     "/api/v1/municipalidades",
-    createMunicipalidadesRouter(service, auth),
+    createMunicipalidadesRouter(
+      service as unknown as Parameters<typeof createMunicipalidadesRouter>[0],
+      auth,
+    ),
   );
   app.use(errorHandler);
   server = app.listen(0);
