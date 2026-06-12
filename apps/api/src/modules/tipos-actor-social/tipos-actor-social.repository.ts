@@ -1,11 +1,11 @@
-import type { PrismaClient } from "@prisma/client";
+import type { TipoActorSocial, PrismaClient } from "@prisma/client";
 import type {
   TipoActorSocialCreateInput,
   TipoActorSocialRecord,
   TipoActorSocialUpdateInput,
   TiposActorSocialRepository,
 } from "./tipos-actor-social.types.js";
-function map(record: any): TipoActorSocialRecord {
+function map(record: TipoActorSocial): TipoActorSocialRecord {
   return {
     ...record,
     tarifaRural: Number(record.tarifaRural),
