@@ -1,0 +1,126 @@
+export type EstadoGrupoTrabajo =
+  | "BORRADOR"
+  | "REGISTRADO"
+  | "OBSERVADO"
+  | "VALIDADO";
+
+export type GrupoTrabajoRecord = {
+  id: string;
+  municipalidadId: string;
+  fechaLimite: Date;
+  nombreGrupo: string;
+  periodoYear: number;
+  dniRepresentante: string;
+  nombreRepresentante: string;
+  apellidosRepresentante: string;
+  estado: EstadoGrupoTrabajo;
+  activo: boolean;
+  archivado: boolean;
+};
+
+export type GrupoTrabajoCreateInput = Omit<
+  GrupoTrabajoRecord,
+  "id" | "fechaLimite" | "estado" | "activo" | "archivado"
+> & {
+  fechaLimite: string | Date;
+};
+
+export type GrupoEstablecimientoRecord = {
+  id: string;
+  grupoTrabajoId: string;
+  nombre: string;
+  codigo: string | null;
+  direccion: string | null;
+  activo: boolean;
+};
+
+export type GrupoEstablecimientoCreateInput = {
+  nombre: string;
+  codigo?: string | null;
+  direccion?: string | null;
+};
+
+export type MiembroGrupoRecord = {
+  id: string;
+  grupoTrabajoId: string;
+  grupoEstablecimientoId: string | null;
+  cargoMiembroGrupoId: string;
+  dni: string;
+  nombres: string;
+  apellidos: string;
+  celular: string | null;
+  email: string | null;
+  activo: boolean;
+  archivado: boolean;
+  deletedAt?: Date | null;
+  motivoEliminacion?: string | null;
+};
+
+export type MiembroGrupoCreateInput = {
+  grupoEstablecimientoId?: string | null;
+  cargoMiembroGrupoId: string;
+  dni: string;
+  nombres: string;
+  apellidos: string;
+  celular?: string | null;
+  email?: string | null;
+};
+
+export type MiembroGrupoContactoInput = {
+  grupoEstablecimientoId?: string | null;
+  celular?: string | null;
+  email?: string | null;
+};
+
+export type MiembroGrupoDeleteInput = {
+  motivoEliminacion: string;
+};
+
+export type MiembroGrupoDeleteResult = MiembroGrupoRecord & {
+  notificationMessage: string;
+};
+
+export type GruposTrabajoRepository = {
+  list(): Promise<GrupoTrabajoRecord[]>;
+  findGrupoById(id: string): Promise<{ id: string } | null>;
+  findCargoById(id: string): Promise<{ id: string } | null>;
+  findEstablecimientoById(
+    id: string,
+  ): Promise<{ id: string; grupoTrabajoId: string } | null>;
+  createGrupo(
+    data: GrupoTrabajoCreateInput & {
+      estado: "BORRADOR";
+      activo: true;
+      archivado: false;
+    },
+  ): Promise<GrupoTrabajoRecord>;
+  createEstablecimiento(
+    data: GrupoEstablecimientoCreateInput & {
+      grupoTrabajoId: string;
+      activo: true;
+    },
+  ): Promise<GrupoEstablecimientoRecord>;
+  createMiembro(
+    data: MiembroGrupoCreateInput & {
+      grupoTrabajoId: string;
+      grupoEstablecimientoId?: string | null;
+      activo: true;
+      archivado: false;
+    },
+  ): Promise<MiembroGrupoRecord>;
+  updateMiembroContacto(
+    grupoTrabajoId: string,
+    miembroId: string,
+    data: MiembroGrupoContactoInput,
+  ): Promise<MiembroGrupoRecord>;
+  setMiembroActivo(
+    grupoTrabajoId: string,
+    miembroId: string,
+    activo: boolean,
+  ): Promise<MiembroGrupoRecord>;
+  deleteMiembro(
+    grupoTrabajoId: string,
+    miembroId: string,
+    data: MiembroGrupoDeleteInput,
+  ): Promise<MiembroGrupoRecord>;
+};
