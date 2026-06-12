@@ -195,31 +195,36 @@ Criterios de diseño para esta navegación:
 5. Evitar tarjetas grandes como navegación principal permanente; las tarjetas pueden existir como resumen, pero la navegación diaria debe estar en la barra superior.
 6. Mantener preparadas opciones futuras como Niños y Reportes, pero sin activar rutas funcionales hasta su fase correspondiente.
 
-## 8. Módulos V1 que se implementarán después
+## 8. Módulos V1 Implementados y Pendientes
 
-Después de cerrar infraestructura y auth, la V1 frontend puede avanzar por módulos independientes:
+### Módulos Implementados
 
 1. **Municipalidades** (`features/municipalidades`)
-   - listado;
-   - crear/editar mediante modal;
-   - activar/inactivar.
+   - **Solo lectura**: Se eliminó el botón de creación ("+ Nueva municipalidad") y edición.
+   - **Botón "Ver"**: Se reemplazaron las acciones de edición por un botón "Ver" que abre un modal con el formulario de detalles en modo solo lectura (todos los inputs deshabilitados).
+   - **Filtros funcionales**: El botón "Filtros" abre un panel funcional (`admin-filters-panel`) que permite filtrar el listado en tiempo real por búsqueda de texto y estado (Activo/Inactivo).
 
 2. **Entidades** (`features/entidades`)
-   - listado;
-   - crear/editar;
-   - activar/inactivar;
-   - archivar.
+   - **Listado y CRUD**: Creación y edición mediante modal.
+   - **Combobox de Tipo de Entidad**: Se adaptó el campo a un select combobox con 4 opciones específicas:
+     - Otras entidades públicas
+     - Entidad Privada
+     - Municipalidades
+     - Establecimiento Salud
+   - **Filtros funcionales**: Panel de filtros para búsqueda de texto, estado y tipo de entidad.
 
 3. **Tipos de Actor Social** (`features/tipos-actor-social`)
-   - tarifas rural/urbana;
-   - código;
-   - orden;
-   - activar/inactivar;
-   - archivar.
+   - **Solo lectura**: Se eliminaron los botones de creación y edición.
+   - **Botón "Ver"**: Reemplazado por un botón "Ver" que abre un modal con el formulario de detalles de tarifas rural/urbana, código, orden e información general en modo solo lectura.
+   - **Filtros funcionales**: Panel de filtros por búsqueda de texto y estado.
+   - **DataLoader**: Se implementó una precarga en base de datos de 9 registros por defecto (Agentes Comunitarios, Facilitadores de Cuna Más SAF, Agentes Voluntarios, Lideres Comunales, Estudiantes de Educacion Superior, Madres lideres de Vaso de Leche, Ejercito, Ronderos, Otros).
 
 4. **Cargos de Miembro** (`features/cargos-miembro-grupo`)
-   - crear/editar;
-   - activar/inactivar.
+   - **CRUD completo**: Creación y edición en modal. Activar e inactivar funcional.
+   - **Filtros funcionales**: Panel de filtros por búsqueda de texto y estado.
+   - *Nota*: Este módulo no implementa archivado debido a que la API de backend no dispone de dicho endpoint.
+
+### Módulos V1 por Implementar
 
 5. **Grupos de Trabajo** (`features/grupos-trabajo`)
    - listado;
