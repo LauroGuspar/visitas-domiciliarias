@@ -4,15 +4,15 @@ services:
     container_name: visitas_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-visitas}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-visitas_dev_password}
-      POSTGRES_DB: ${POSTGRES_DB:-visitas_domiciliarias}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-visitas} -d ${POSTGRES_DB:-visitas_domiciliarias}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -21,14 +21,14 @@ services:
     image: node:24-alpine
     container_name: visitas_api
     working_dir: /workspace
-    command: sh -c "corepack enable && pnpm install --frozen-lockfile && pnpm --filter @visitas/api dev"
+    command: sh -c "corepack enable && pnpm install --frozen-lockfile && pnpm db:generate && pnpm --filter @visitas/api exec prisma migrate deploy && pnpm --filter @visitas/api db:seed && pnpm --filter @visitas/api dev"
     env_file:
       - .env
     environment:
       CI: "true"
-      DATABASE_URL: "postgresql://${POSTGRES_USER:-visitas}:${POSTGRES_PASSWORD:-visitas_dev_password}@postgres:5432/${POSTGRES_DB:-visitas_domiciliarias}?schema=public"
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
     ports:
-      - "${API_PORT:-4000}:4000"
+      - "${API_PORT}:4000"
     volumes:
       - .:/workspace
       - api_root_node_modules:/workspace/node_modules
@@ -42,7 +42,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "node -e \"fetch('http://127.0.0.1:' + (process.env.API_PORT || 4000) + '/api/v1/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))\""
+          'node -e "fetch(''http://127.0.0.1:'' + (process.env.API_PORT || 4000) + ''/api/v1/health'').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"',
         ]
       interval: 10s
       timeout: 5s
