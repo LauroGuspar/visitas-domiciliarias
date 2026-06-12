@@ -13,6 +13,9 @@
     --primary: #0f766e;
     --primary-strong: #115e59;
     --primary-soft: #d9f4ef;
+    --topbar: #05383d;
+    --topbar-strong: #022a2f;
+    --topbar-text: #f6fffd;
     --danger: #b42318;
     --danger-soft: #fee4e2;
     --success: #067647;
@@ -53,6 +56,9 @@
         --primary: #5eead4;
         --primary-strong: #99f6e4;
         --primary-soft: rgba(45, 212, 191, 0.14);
+        --topbar: #041f24;
+        --topbar-strong: #03181c;
+        --topbar-text: #edfdf8;
         --danger: #f97066;
         --danger-soft: rgba(244, 63, 94, 0.14);
         --success: #6ce9a6;
@@ -72,7 +78,8 @@ body {
 }
 
 button,
-input {
+input,
+select {
     font: inherit;
 }
 
