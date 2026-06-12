@@ -22,6 +22,7 @@ enum EstadoGrupoTrabajo {
   REGISTRADO
   OBSERVADO
   VALIDADO
+  RECHAZADO
 }
 
 enum TipoSector {
@@ -151,6 +152,7 @@ model GrupoTrabajo {
   nombreRepresentante    String             @map("nombre_representante") @db.VarChar(150)
   apellidosRepresentante String             @map("apellidos_representante") @db.VarChar(200)
   estado                 EstadoGrupoTrabajo @default(BORRADOR)
+  observaciones          String?            @map("observaciones") @db.Text
   activo                 Boolean            @default(true)
   archivado              Boolean            @default(false)
   createdAt              DateTime           @default(now()) @map("created_at")

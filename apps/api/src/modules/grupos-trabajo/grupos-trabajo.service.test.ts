@@ -228,4 +228,31 @@ describe("GruposTrabajoService", () => {
       service.deleteMiembro("grupo-1", "miembro-1", { motivoEliminacion: " " }),
     ).rejects.toMatchObject({ statusCode: 400 });
   });
+
+  it("updates a group's state", async () => {
+    const updateGrupoEstado = vi.fn().mockResolvedValue({
+      id: "grupo-1",
+      estado: "VALIDADO",
+      observaciones: null,
+    });
+    const service = new GruposTrabajoService(
+      createRepository({ updateGrupoEstado }),
+    );
+
+    const result = await service.updateGrupoEstado("grupo-1", "VALIDADO");
+    expect(result).toMatchObject({ estado: "VALIDADO" });
+    expect(updateGrupoEstado).toHaveBeenCalledWith("grupo-1", "VALIDADO", null);
+  });
+
+  it("requires observations when status is OBSERVADO or RECHAZADO", async () => {
+    const service = new GruposTrabajoService(createRepository());
+
+    await expect(
+      service.updateGrupoEstado("grupo-1", "OBSERVADO", " "),
+    ).rejects.toMatchObject({ statusCode: 400 });
+
+    await expect(
+      service.updateGrupoEstado("grupo-1", "RECHAZADO", ""),
+    ).rejects.toMatchObject({ statusCode: 400 });
+  });
 });

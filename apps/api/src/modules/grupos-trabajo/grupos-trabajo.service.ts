@@ -116,6 +116,17 @@ export class GruposTrabajoService {
     return { ...record, notificationMessage: NOTIFICATION_MESSAGE };
   }
 
+  async updateGrupoEstado(
+    id: string,
+    estado: any,
+    observaciones?: string | null,
+  ): Promise<GrupoTrabajoRecord> {
+    if ((estado === "OBSERVADO" || estado === "RECHAZADO") && !observaciones?.trim()) {
+      throw new HttpError(400, "Las observaciones son obligatorias para este estado");
+    }
+    return this.repository.updateGrupoEstado(id, estado, observaciones?.trim() || null);
+  }
+
   private async ensureGrupoExists(grupoTrabajoId: string): Promise<void> {
     if (!(await this.repository.findGrupoById(grupoTrabajoId))) {
       throw new HttpError(404, "Grupo de trabajo no encontrado");

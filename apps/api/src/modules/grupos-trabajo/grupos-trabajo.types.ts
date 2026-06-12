@@ -2,7 +2,8 @@ export type EstadoGrupoTrabajo =
   | "BORRADOR"
   | "REGISTRADO"
   | "OBSERVADO"
-  | "VALIDADO";
+  | "VALIDADO"
+  | "RECHAZADO";
 
 export type GrupoTrabajoRecord = {
   id: string;
@@ -14,6 +15,7 @@ export type GrupoTrabajoRecord = {
   nombreRepresentante: string;
   apellidosRepresentante: string;
   estado: EstadoGrupoTrabajo;
+  observaciones: string | null;
   activo: boolean;
   archivado: boolean;
 };
@@ -123,4 +125,9 @@ export type GruposTrabajoRepository = {
     miembroId: string,
     data: MiembroGrupoDeleteInput,
   ): Promise<MiembroGrupoRecord>;
+  updateGrupoEstado(
+    id: string,
+    estado: EstadoGrupoTrabajo,
+    observaciones?: string | null,
+  ): Promise<GrupoTrabajoRecord>;
 };

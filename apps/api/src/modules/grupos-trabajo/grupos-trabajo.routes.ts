@@ -2,6 +2,7 @@ import { Router, type RequestHandler } from "express";
 import {
   activoPayloadSchema,
   grupoEstablecimientoPayloadSchema,
+  grupoTrabajoEstadoSchema,
   grupoTrabajoPayloadSchema,
   miembroGrupoContactoSchema,
   miembroGrupoDeleteSchema,
@@ -141,6 +142,25 @@ export function createGruposTrabajoRouter(
           req.params.grupoId,
           req.params.miembroId,
           parsed.data,
+        ),
+      );
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  router.patch("/:id/estado", async (req, res, next) => {
+    const parsed = grupoTrabajoEstadoSchema.safeParse(req.body);
+    if (!parsed.success) {
+      validationError(res, "Datos de estado inválidos", parsed.error);
+      return;
+    }
+    try {
+      res.json(
+        await service.updateGrupoEstado(
+          req.params.id,
+          parsed.data.estado,
+          parsed.data.observaciones,
         ),
       );
     } catch (error) {

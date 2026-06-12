@@ -131,4 +131,27 @@ export class PrismaGruposTrabajoRepository implements GruposTrabajoRepository {
       data,
     });
   }
+
+  async updateGrupoEstado(
+    id: string,
+    estado: EstadoGrupoTrabajo,
+    observaciones?: string | null,
+  ): Promise<GrupoTrabajoRecord> {
+    const existing = await this.prisma.grupoTrabajo.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!existing) {
+      throw new HttpError(404, "Grupo de trabajo no encontrado");
+    }
+
+    return this.prisma.grupoTrabajo.update({
+      where: { id },
+      data: {
+        estado,
+        observaciones: observaciones ?? null,
+      },
+    }) as unknown as Promise<GrupoTrabajoRecord>;
+  }
 }

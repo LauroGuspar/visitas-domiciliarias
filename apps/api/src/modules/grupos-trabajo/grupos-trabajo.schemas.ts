@@ -53,3 +53,8 @@ export const activoPayloadSchema = z.object({ activo: z.boolean() });
 export const miembroGrupoDeleteSchema = z.object({
   motivoEliminacion: z.string().trim().min(1),
 });
+
+export const grupoTrabajoEstadoSchema = z.object({
+  estado: z.enum(["BORRADOR", "REGISTRADO", "OBSERVADO", "VALIDADO", "RECHAZADO"]),
+  observaciones: z.string().trim().nullable().optional(),
+});
