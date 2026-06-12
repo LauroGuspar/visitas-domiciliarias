@@ -70,6 +70,7 @@ Catálogo importable de entidades.
 | codigo | VARCHAR(100) | Código de entidad. |
 | nombre | VARCHAR(150) | Nombre. |
 | activo | BOOLEAN | Habilitación operativa. |
+| archivado | BOOLEAN | Retiro lógico simple. |
 | created_at | TIMESTAMP | Auditoría básica. |
 | updated_at | TIMESTAMP | Auditoría básica. |
 
@@ -124,7 +125,7 @@ Catálogo controlado para miembros administrativos del grupo.
 
 ### grupo_establecimiento
 
-Establecimientos asociados al grupo de trabajo. Funcional en V1.
+Establecimientos asociados al grupo de trabajo. En V1 se pueden crear; la edición y activación/inactivación no son funcionales en V1.
 
 | Campo | Tipo | Notas |
 | --- | --- | --- |
@@ -145,12 +146,13 @@ Miembros administrativos del grupo. No son actores sociales y no tienen login en
 | --- | --- | --- |
 | id | UUID/BIGSERIAL | PK |
 | grupo_trabajo_id | FK | Grupo propietario. |
+| grupo_establecimiento_id | FK nullable | Establecimiento al que pertenece dentro del grupo. Editable en V1. |
 | cargo_miembro_grupo_id | FK | Cargo controlado por catálogo. |
 | dni | VARCHAR(8) | Documento. |
 | nombres | VARCHAR(150) | Nombres. |
 | apellidos | VARCHAR(200) | Apellidos. |
-| celular | VARCHAR(9) | Opcional. |
-| email | VARCHAR(150) | Opcional. |
+| celular | VARCHAR(9) | Opcional. Editable en V1. |
+| email | VARCHAR(150) | Opcional. Editable en V1. |
 | activo | BOOLEAN | Habilitación operativa. |
 | archivado | BOOLEAN | Retiro lógico. |
 | deleted_at | TIMESTAMP nullable | Eliminación lógica. |
@@ -218,7 +220,7 @@ La exclusividad debe validarse en la aplicación y, si es posible, reforzarse co
 
 ### actor_social
 
-En V1 tendrá mantenimiento esencial completo y usuario/contraseña, pero no asignación de sectores.
+En V1 tendrá mantenimiento esencial completo y usuario/contraseña, pero no asignación de sectores ni manzanas. La asignación territorial queda para V2.
 
 | Campo | Tipo | Notas |
 | --- | --- | --- |
@@ -231,12 +233,13 @@ En V1 tendrá mantenimiento esencial completo y usuario/contraseña, pero no asi
 | dni | VARCHAR(8) | Documento. |
 | nombres | VARCHAR(150) | Nombres. |
 | apellidos | VARCHAR(150) | Apellidos. |
-| direccion | VARCHAR(200) | Dirección. |
+| direccion | VARCHAR(200) | Dirección. Editable en V1. |
+| centro_poblado | VARCHAR(100) nullable | Centro poblado. Editable en V1. |
 | fecha_nac | DATE | Fecha de nacimiento. |
-| email | VARCHAR(150) | Contacto. |
-| celular | VARCHAR(9) | Contacto. |
+| email | VARCHAR(150) | Contacto. Editable en V1. |
+| celular | VARCHAR(9) | Contacto. Editable en V1. |
 | idioma_origen | ENUM/VARCHAR | Valor controlado. |
-| grado_instruccion | ENUM/VARCHAR | Valor controlado. |
+| grado_instruccion | ENUM/VARCHAR | Valor controlado. Editable en V1. |
 | estado | ENUM | `BORRADOR`, `REGISTRADO`, `VALIDO`, `CAPACITADO`, `APROBADO`. |
 | activo | BOOLEAN | Habilitación operativa. |
 | archivado | BOOLEAN | Retiro lógico. |
@@ -244,6 +247,10 @@ En V1 tendrá mantenimiento esencial completo y usuario/contraseña, pero no asi
 | motivo_eliminacion | TEXT nullable | Obligatorio cuando se elimina. |
 | created_at | TIMESTAMP | Auditoría básica. |
 | updated_at | TIMESTAMP | Auditoría básica. |
+
+### Edición permitida en V1
+
+En V1 se pueden editar datos administrativos/personales propios del registro, incluyendo grupo de trabajo, email, teléfono, dirección, centro poblado, grado de instrucción y entidad. No se editan sectores ni manzanas porque pertenecen a V2.
 
 ### Importante: `estado` vs `activo`
 

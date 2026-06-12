@@ -17,7 +17,7 @@ Entregar una primera versión administrativa que permita configurar la municipal
 1. Autenticación base
    - Login con `username` y contraseña.
    - JWT.
-   - Restablecimiento de contraseña por enlace enviado vía Gmail.
+   - El restablecimiento de contraseña por enlace enviado vía Gmail queda al final de V1, después de cerrar los módulos administrativos principales.
 
 2. Usuarios y roles mínimos
    - Administrador general.
@@ -26,28 +26,40 @@ Entregar una primera versión administrativa que permita configurar la municipal
 
 3. Configuración base
    - Municipalidad.
-   - Entidades.
-   - Tipo actor social.
-   - Cargo miembro grupo.
+   - Entidades: crear, editar, activar/inactivar y archivar.
+   - Tipo actor social: crear, editar, activar/inactivar y archivar.
+   - Cargo miembro grupo: crear, editar y activar/inactivar.
 
 4. Grupo de trabajo
-   - Mantenimiento completo.
-   - Estados: `BORRADOR`, `REGISTRADO`, `OBSERVADO`, `VALIDADO`.
-   - Establecimientos funcionales.
-   - Miembros administrativos funcionales.
+   - Crear grupo.
+   - Administrar sus establecimientos y miembros.
+   - No se contempla edición de datos generales, activación/inactivación ni archivado del grupo en V1.
+   - Estados preparados: `BORRADOR`, `REGISTRADO`, `OBSERVADO`, `VALIDADO`.
+   - No incluye actas ni otros documentos del grupo en V1.
 
-5. Sectores
-   - Mantenimiento completo.
+5. Establecimientos del grupo
+   - Crear establecimientos asociados al grupo.
+   - No se contempla edición ni activación/inactivación de establecimientos en V1.
+
+6. Miembros del grupo
+   - Crear miembros administrativos.
+   - Editar solo establecimiento al que pertenece, teléfono y correo.
+   - Activar/inactivar.
+
+7. Sectores
+   - Crear, editar, activar/inactivar, archivar y eliminar según regla del módulo.
    - Sector padre.
    - Sector urbano.
    - Sector rural.
    - Regla: un sector es urbano o rural, nunca ambos.
 
-6. Actor social
+8. Actor social
    - Mantenimiento esencial completo.
    - Usuario y contraseña.
    - Estados previstos.
-   - Sin asignación de sectores.
+   - Editar datos administrativos/personales permitidos: grupo de trabajo, email, teléfono, dirección, centro poblado, grado de educación, tipo de entidad y otros datos propios del registro.
+   - Activar/inactivar y archivar.
+   - Sin asignación de sectores ni manzanas en V1.
 
 ### No incluye
 

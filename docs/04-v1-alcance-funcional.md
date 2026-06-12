@@ -13,7 +13,7 @@ Funcionalidades:
 - Login por `username` y contraseña.
 - Emisión de JWT.
 - Validación de usuario activo.
-- Restablecer contraseña por enlace enviado por Gmail.
+- Restablecer contraseña por enlace enviado por Gmail, como último bloque de V1.
 
 Reglas:
 
@@ -35,27 +35,39 @@ No se espera eliminación frecuente de municipalidades.
 
 Funcionalidades:
 
-- Mantenimiento de entidades.
+- Crear entidad.
+- Editar entidad.
 - Importación prevista.
 - Activar/inactivar.
+- Archivar.
 
-No aplica eliminación con motivo en V1.
+Reglas:
+
+- Archivar retira la entidad del uso normal.
+- No aplica eliminación con motivo en V1.
 
 ### 4. Tipo Actor Social
 
 Funcionalidades:
 
-- Crear/editar tipos de actor social.
-- Tarifas rural/urbana.
-- Orden, código y activo.
+- Crear tipo de actor social.
+- Editar tipo de actor social.
+- Mantener tarifas rural/urbana.
+- Mantener orden, código y activo.
+- Activar/inactivar.
+- Archivar.
 
-No aplica eliminación con motivo en V1.
+Reglas:
+
+- Archivar retira el tipo del uso normal.
+- No aplica eliminación con motivo en V1.
 
 ### 5. Cargo Miembro Grupo
 
 Funcionalidades:
 
-- Crear/editar cargos administrativos.
+- Crear cargo administrativo.
+- Editar cargo administrativo.
 - Activar/inactivar.
 - Usar como catálogo controlado en miembros del grupo.
 
@@ -71,12 +83,17 @@ Ejemplos:
 Funcionalidades:
 
 - Crear grupo.
-- Editar grupo.
-- Cambiar estado.
-- Activar/inactivar.
 - Asociar municipalidad.
 - Registrar representante.
 - Registrar fecha límite y periodo.
+- Administrar sus establecimientos y miembros.
+
+Reglas:
+
+- En V1, después de crear el grupo, la administración se concentra en sus miembros y establecimientos.
+- No se contempla edición de datos generales, activación/inactivación ni archivado del grupo en V1.
+- Los estados quedan preparados en la base de datos, pero no habilitan un flujo funcional adicional en V1.
+- No incluye actas, documentos u otros anexos del grupo.
 
 Estados:
 
@@ -89,8 +106,11 @@ Estados:
 
 Funcionalidades:
 
-- Crear/editar establecimientos asociados al grupo.
-- Activar/inactivar.
+- Crear establecimientos asociados al grupo.
+
+Reglas:
+
+- En V1 no se contempla edición ni activación/inactivación de establecimientos.
 
 ### 8. Miembros del grupo
 
@@ -98,9 +118,11 @@ Los miembros son personal administrativo del grupo de trabajo, no actores social
 
 Funcionalidades:
 
-- Crear/editar miembro.
+- Crear miembro.
 - Asociar cargo por catálogo.
+- Editar solo establecimiento al que pertenece, teléfono y correo.
 - Activar/inactivar.
+- Archivar.
 - Eliminar lógicamente con motivo.
 
 Regla de eliminación:
@@ -118,6 +140,7 @@ Funcionalidades:
 - Editar sector.
 - Activar/inactivar.
 - Archivar.
+- Eliminar según regla del módulo.
 - Registrar datos comunes.
 - Registrar datos específicos urbanos o rurales.
 
@@ -136,13 +159,14 @@ No incluye en V1:
 Funcionalidades:
 
 - Crear actor social.
-- Editar datos personales/contacto.
+- Editar datos administrativos/personales permitidos: grupo de trabajo, email, teléfono, dirección, centro poblado, grado de educación, tipo de entidad y otros datos propios del registro.
 - Asociar a tipo actor social.
 - Asociar a grupo de trabajo.
 - Asociar a entidad.
 - Crear usuario y contraseña.
 - Cambiar estado.
 - Activar/inactivar.
+- Archivar.
 - Eliminar lógicamente con motivo.
 
 Estados previstos:
@@ -171,9 +195,9 @@ No incluye en V1:
 La V1 se considera funcional si permite:
 
 1. Iniciar sesión con JWT.
-2. Restablecer contraseña por enlace.
-3. Administrar municipalidad/catálogos base.
-4. Crear grupos de trabajo con establecimientos y miembros.
-5. Mantener sectores urbanos/rurales.
-6. Registrar actores sociales con usuario y estado.
+2. Administrar municipalidad/catálogos base con sus reglas de crear, editar, activar/inactivar y archivar cuando aplique.
+3. Crear grupos de trabajo y administrar sus establecimientos y miembros según las restricciones de V1.
+4. Mantener sectores urbanos/rurales.
+5. Registrar actores sociales con usuario y estado, sin asignación territorial en V1.
+6. Restablecer contraseña por enlace como último bloque de V1.
 7. Respetar alcance por municipalidad en backend.

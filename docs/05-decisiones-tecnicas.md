@@ -58,7 +58,7 @@ El backend siempre debe validar permisos y alcance en servidor.
 
 ## 5. Restablecimiento de contraseña
 
-Se hará por enlace enviado vía Gmail.
+Se hará por enlace enviado vía Gmail y queda como último bloque de V1, después de cerrar los módulos administrativos principales.
 
 Reglas:
 
@@ -106,10 +106,11 @@ Se usarán ambos conceptos cuando aplique:
 - `archivado`: retiro del uso normal.
 - `deleted_at`: fecha/hora de eliminación lógica.
 
-En V1, el flujo con motivo aplica solo a:
+En V1:
 
-- `actor_social`,
-- `miembro_grupo`.
+- `entidad`, `tipo_actor_social`, `sector` y `actor_social` pueden archivarse cuando corresponda.
+- El flujo de eliminación lógica con motivo aplica a `actor_social` y `miembro_grupo`.
+- `sector` puede eliminarse según la regla específica del módulo.
 
 Flujo V1:
 
@@ -126,7 +127,23 @@ Fase posterior:
 - aprobación/rechazo del administrador general,
 - historial de decisión.
 
-## 10. Miembro grupo vs Actor Social
+## 10. Capacidades administrativas por módulo en V1
+
+| Módulo | Crear | Editar | Activar/inactivar | Archivar | Eliminar |
+| --- | --- | --- | --- | --- | --- |
+| `municipalidad` | Sí | Sí | Sí | No frecuente | No esperado |
+| `entidad` | Sí | Sí | Sí | Sí | No con motivo |
+| `tipo_actor_social` | Sí | Sí | Sí | Sí | No con motivo |
+| `cargo_miembro_grupo` | Sí | Sí | Sí | No | No esperado |
+| `grupo_trabajo` | Sí | No datos generales; solo administración de miembros y establecimientos | No en V1 | No en V1 | No en V1 |
+| `grupo_establecimiento` | Sí | No en V1 | No en V1 | No en V1 | No en V1 |
+| `miembro_grupo` | Sí | Solo establecimiento, teléfono y correo | Sí | Sí, mediante eliminación lógica | Sí, lógica con motivo |
+| `sector` | Sí | Sí | Sí | Sí | Sí, según regla del módulo |
+| `actor_social` | Sí | Datos administrativos/personales permitidos | Sí | Sí | Sí, lógica con motivo |
+
+La asignación de sectores y manzanas al actor social se mantiene fuera de V1 y pertenece a V2.
+
+## 11. Miembro grupo vs Actor Social
 
 `miembro_grupo` y `actor_social` son entidades distintas.
 
