@@ -58,8 +58,7 @@ describe("admin navigation", () => {
   it("keeps reusable navbar groups independent from dashboard page content", () => {
     const groups = getVisibleNavGroups("ADMIN_GENERAL");
 
-    expect(groups.map((group) => group.label)).toContain("Configuración");
-    expect(groups.map((group) => group.label)).toContain("Niños");
+    expect(groups.map((group) => group.label)).toEqual(expectedDocGroups);
     expect(groups[0].items.map((item) => item.label)).toContain(
       "Municipalidades",
     );
