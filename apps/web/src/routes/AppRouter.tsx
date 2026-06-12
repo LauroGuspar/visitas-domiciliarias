@@ -13,7 +13,9 @@ import {
 import { ForgotPasswordPage } from "../features/auth/pages/ForgotPasswordPage";
 import { LoginPage } from "../features/auth/pages/LoginPage";
 import { ResetPasswordPage } from "../features/auth/pages/ResetPasswordPage";
+import { DashboardLayout } from "../features/dashboard/layout/DashboardLayout";
 import { DashboardHomePage } from "../features/dashboard/pages/DashboardHomePage";
+import { MunicipalidadesPage } from "../features/municipalidades/pages/MunicipalidadesPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 function SessionExpirationListener() {
@@ -44,16 +46,16 @@ function SessionExpirationListener() {
 
 function ComingSoonPage() {
   return (
-    <main className="dashboard-shell">
-      <section className="empty-state">
+    <section className="admin-page-heading admin-empty-state">
+      <div>
         <p className="eyebrow">Módulo V1</p>
         <h1>Próxima implementación modular</h1>
         <p>
           Esta ruta ya está reservada. El CRUD se implementará en su feature
           correspondiente sin mezclar responsabilidades con autenticación.
         </p>
-      </section>
-    </main>
+      </div>
+    </section>
   );
 }
 
@@ -67,14 +69,20 @@ export function AppRouter() {
         <Route element={<ResetPasswordPage />} path="/reset-password" />
 
         <Route element={<ProtectedRoute />}>
-          <Route element={<DashboardHomePage />} path="/" />
-          <Route element={<ComingSoonPage />} path="/municipalidades" />
-          <Route element={<ComingSoonPage />} path="/entidades" />
-          <Route element={<ComingSoonPage />} path="/tipos-actor-social" />
-          <Route element={<ComingSoonPage />} path="/cargos-miembro-grupo" />
-          <Route element={<ComingSoonPage />} path="/grupos-trabajo" />
-          <Route element={<ComingSoonPage />} path="/sectores" />
-          <Route element={<ComingSoonPage />} path="/actores-sociales" />
+          <Route element={<DashboardLayout />}>
+            <Route element={<DashboardHomePage />} path="/" />
+            <Route element={<MunicipalidadesPage />} path="/municipalidades" />
+            <Route element={<ComingSoonPage />} path="/entidades" />
+            <Route element={<ComingSoonPage />} path="/tipos-actor-social" />
+            <Route element={<ComingSoonPage />} path="/grupos-trabajo" />
+            <Route element={<ComingSoonPage />} path="/sectores" />
+            <Route element={<ComingSoonPage />} path="/sectores/urbano" />
+            <Route element={<ComingSoonPage />} path="/sectores/rural" />
+            <Route element={<ComingSoonPage />} path="/actores-sociales" />
+            <Route element={<ComingSoonPage />} path="/ninos/visitas" />
+            <Route element={<ComingSoonPage />} path="/reportes/actividad" />
+            <Route element={<ComingSoonPage />} path="/reportes/operativos" />
+          </Route>
         </Route>
 
         <Route element={<Navigate replace to="/" />} path="*" />
