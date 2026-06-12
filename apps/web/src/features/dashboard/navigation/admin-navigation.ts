@@ -38,6 +38,12 @@ export const navGroups: NavGroup[] = [
         path: "/tipos-actor-social",
         roles: ["ADMIN_GENERAL"],
       },
+      {
+        label: "Cargos de Miembro",
+        description: "Cargos administrativos para los miembros.",
+        path: "/cargos-miembro-grupo",
+        roles: ["ADMIN_GENERAL"],
+      },
     ],
   },
   {

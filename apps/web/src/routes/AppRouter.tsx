@@ -18,6 +18,7 @@ import { DashboardHomePage } from "../features/dashboard/pages/DashboardHomePage
 import { MunicipalidadesPage } from "../features/municipalidades/pages/MunicipalidadesPage";
 import { EntidadesPage } from "../features/entidades/pages/EntidadesPage";
 import { TiposActorSocialPage } from "../features/tipos-actor-social/pages/TiposActorSocialPage";
+import { CargosMiembroPage } from "../features/cargos-miembro-grupo/pages/CargosMiembroPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 function SessionExpirationListener() {
@@ -76,6 +77,7 @@ export function AppRouter() {
             <Route element={<MunicipalidadesPage />} path="/municipalidades" />
             <Route element={<EntidadesPage />} path="/entidades" />
             <Route element={<TiposActorSocialPage />} path="/tipos-actor-social" />
+            <Route element={<CargosMiembroPage />} path="/cargos-miembro-grupo" />
             <Route element={<ComingSoonPage />} path="/grupos-trabajo" />
             <Route element={<ComingSoonPage />} path="/sectores" />
             <Route element={<ComingSoonPage />} path="/sectores/urbano" />
