@@ -16,6 +16,7 @@ import { ResetPasswordPage } from "../features/auth/pages/ResetPasswordPage";
 import { DashboardLayout } from "../features/dashboard/layout/DashboardLayout";
 import { DashboardHomePage } from "../features/dashboard/pages/DashboardHomePage";
 import { MunicipalidadesPage } from "../features/municipalidades/pages/MunicipalidadesPage";
+import { EntidadesPage } from "../features/entidades/pages/EntidadesPage";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 function SessionExpirationListener() {
@@ -72,7 +73,7 @@ export function AppRouter() {
           <Route element={<DashboardLayout />}>
             <Route element={<DashboardHomePage />} path="/" />
             <Route element={<MunicipalidadesPage />} path="/municipalidades" />
-            <Route element={<ComingSoonPage />} path="/entidades" />
+            <Route element={<EntidadesPage />} path="/entidades" />
             <Route element={<ComingSoonPage />} path="/tipos-actor-social" />
             <Route element={<ComingSoonPage />} path="/grupos-trabajo" />
             <Route element={<ComingSoonPage />} path="/sectores" />
