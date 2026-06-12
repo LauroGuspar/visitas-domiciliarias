@@ -31,12 +31,21 @@ export function buildTipoActorSocialPayload(form: TipoActorSocialFormState) {
 export function filterTiposActorSocial(
   records: TipoActorSocialRecord[],
   query: string,
+  statusFilter?: "active" | "inactive" | "",
 ): TipoActorSocialRecord[] {
+  let result = records;
+
+  if (statusFilter === "active") {
+    result = result.filter((r) => r.activo);
+  } else if (statusFilter === "inactive") {
+    result = result.filter((r) => !r.activo);
+  }
+
   const cleanQuery = query.trim().toLowerCase();
   if (!cleanQuery) {
-    return records;
+    return result;
   }
-  return records.filter(
+  return result.filter(
     (r) =>
       r.tipoActor.toLowerCase().includes(cleanQuery) ||
       r.codigo.toLowerCase().includes(cleanQuery),

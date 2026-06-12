@@ -2,18 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { ApiError } from "../../../shared/api";
 import {
   archiveTipoActorSocial,
-  createTipoActorSocial,
   listTiposActorSocial,
   setTipoActorSocialActivo,
-  updateTipoActorSocial,
 } from "../tipos-actor-social-api";
-import { getTipoActorSocialFormTitle } from "../tipos-actor-social-form";
 import type {
   TipoActorSocialFormState,
   TipoActorSocialRecord,
 } from "../tipos-actor-social-types";
 import {
-  buildTipoActorSocialPayload,
   emptyTipoActorSocialForm,
   filterTiposActorSocial,
   toTipoActorSocialForm,
@@ -23,16 +19,19 @@ export function TiposActorSocialPage() {
   const [records, setRecords] = useState<TipoActorSocialRecord[]>([]);
   const [query, setQuery] = useState("");
   const [form, setForm] = useState<TipoActorSocialFormState>(emptyTipoActorSocialForm);
-  const [editingRecord, setEditingRecord] = useState<TipoActorSocialRecord | null>(null);
+  const [viewingRecord, setViewingRecord] = useState<TipoActorSocialRecord | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Filter states
+  const [showFilters, setShowFilters] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<"active" | "inactive" | "">("");
+
   const filteredRecords = useMemo(
-    () => filterTiposActorSocial(records, query),
-    [records, query],
+    () => filterTiposActorSocial(records, query, statusFilter),
+    [records, query, statusFilter],
   );
 
   useEffect(() => {
@@ -51,16 +50,8 @@ export function TiposActorSocialPage() {
     }
   }
 
-  function openCreateForm() {
-    setEditingRecord(null);
-    setForm(emptyTipoActorSocialForm);
-    setError(null);
-    setMessage(null);
-    setIsFormOpen(true);
-  }
-
-  function openEditForm(record: TipoActorSocialRecord) {
-    setEditingRecord(record);
+  function openDetails(record: TipoActorSocialRecord) {
+    setViewingRecord(record);
     setForm(toTipoActorSocialForm(record));
     setError(null);
     setMessage(null);
@@ -69,41 +60,8 @@ export function TiposActorSocialPage() {
 
   function closeForm() {
     setIsFormOpen(false);
-    setEditingRecord(null);
+    setViewingRecord(null);
     setForm(emptyTipoActorSocialForm);
-  }
-
-  function updateForm<K extends keyof TipoActorSocialFormState>(
-    field: K,
-    value: TipoActorSocialFormState[K],
-  ) {
-    setForm((current) => ({ ...current, [field]: value }));
-  }
-
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsSaving(true);
-    setError(null);
-    setMessage(null);
-
-    try {
-      const payload = buildTipoActorSocialPayload(form);
-      const saved = editingRecord
-        ? await updateTipoActorSocial(editingRecord.id, payload)
-        : await createTipoActorSocial(payload);
-
-      setRecords((current) => upsertRecord(current, saved));
-      setMessage(
-        editingRecord
-          ? "Tipo de actor social actualizado correctamente."
-          : "Tipo de actor social creado correctamente.",
-      );
-      closeForm();
-    } catch (saveError) {
-      setError(getErrorMessage(saveError));
-    } finally {
-      setIsSaving(false);
-    }
   }
 
   async function handleToggleActivo(record: TipoActorSocialRecord) {
@@ -160,7 +118,7 @@ export function TiposActorSocialPage() {
         <div>
           <h1>Tipos de Actor Social</h1>
           <p>
-            Gestiona los tipos de actor social, sus tarifas de pago y su orden operativo.
+            Consulta los tipos de actor social, sus tarifas de pago y su orden operativo.
           </p>
         </div>
         <div className="breadcrumb-card" aria-label="Ruta actual">
@@ -183,21 +141,46 @@ export function TiposActorSocialPage() {
           </label>
 
           <div className="admin-actions-group">
-            <button className="admin-button is-ghost" type="button">
+            <button
+              className={`admin-button is-ghost${showFilters ? " is-active" : ""}`}
+              onClick={() => setShowFilters(!showFilters)}
+              type="button"
+            >
               Filtros
             </button>
             <button className="admin-button is-ghost" type="button">
               Exportar
             </button>
-            <button
-              className="admin-button is-primary"
-              onClick={openCreateForm}
-              type="button"
-            >
-              + Nuevo tipo de actor social
-            </button>
           </div>
         </div>
+
+        {showFilters ? (
+          <div
+            className="admin-filters-panel"
+            style={{
+              display: "flex",
+              gap: "1rem",
+              marginBottom: "1rem",
+              padding: "1rem",
+              background: "var(--color-bg-alt, rgba(0,0,0,0.02))",
+              borderRadius: "8px",
+              border: "1px solid var(--color-border, rgba(0,0,0,0.08))",
+            }}
+          >
+            <label className="field" style={{ margin: 0, flex: 1 }}>
+              Estado
+              <select
+                onChange={(e) => setStatusFilter(e.target.value as any)}
+                style={{ width: "100%", marginTop: "0.25rem" }}
+                value={statusFilter}
+              >
+                <option value="">Todos</option>
+                <option value="active">Activo</option>
+                <option value="inactive">Inactivo</option>
+              </select>
+            </label>
+          </div>
+        ) : null}
 
         {message ? <p className="alert alert-success">{message}</p> : null}
         {error ? <p className="alert alert-error">{error}</p> : null}
@@ -209,13 +192,13 @@ export function TiposActorSocialPage() {
             className="admin-modal-backdrop"
             role="dialog"
           >
-            <form className="admin-modal" onSubmit={handleSubmit}>
+            <div className="admin-modal">
               <div className="admin-modal-header">
                 <div>
                   <h2 id="tipo-actor-modal-title">
-                    {getTipoActorSocialFormTitle(editingRecord)}
+                    Detalles del Tipo de Actor Social
                   </h2>
-                  <p>Completa los datos requeridos por el backend V1.</p>
+                  <p>Información de registro del catálogo nacional.</p>
                 </div>
                 <button
                   aria-label="Cerrar modal"
@@ -230,74 +213,36 @@ export function TiposActorSocialPage() {
               <div className="admin-form-grid">
                 <label className="field">
                   Código
-                  <input
-                    maxLength={3}
-                    onChange={(event) => updateForm("codigo", event.target.value)}
-                    required
-                    value={form.codigo}
-                  />
+                  <input disabled value={form.codigo} />
                 </label>
                 <label className="field">
                   Orden
-                  <input
-                    min={0}
-                    max={32767}
-                    onChange={(event) => updateForm("orden", event.target.value)}
-                    required
-                    type="number"
-                    value={form.orden}
-                  />
+                  <input disabled type="number" value={form.orden} />
                 </label>
                 <label className="field admin-form-wide">
                   Tipo de Actor
-                  <input
-                    maxLength={150}
-                    onChange={(event) => updateForm("tipoActor", event.target.value)}
-                    required
-                    value={form.tipoActor}
-                  />
+                  <input disabled value={form.tipoActor} />
                 </label>
                 <label className="field">
                   Tarifa Rural (S/.)
-                  <input
-                    min={0}
-                    onChange={(event) => updateForm("tarifaRural", event.target.value)}
-                    required
-                    step="0.01"
-                    type="number"
-                    value={form.tarifaRural}
-                  />
+                  <input disabled type="number" value={form.tarifaRural} />
                 </label>
                 <label className="field">
                   Tarifa Urbana (S/.)
-                  <input
-                    min={0}
-                    onChange={(event) => updateForm("tarifaUrbana", event.target.value)}
-                    required
-                    step="0.01"
-                    type="number"
-                    value={form.tarifaUrbana}
-                  />
+                  <input disabled type="number" value={form.tarifaUrbana} />
                 </label>
               </div>
 
               <div className="admin-form-actions">
                 <button
-                  className="admin-button is-ghost"
+                  className="admin-button is-primary"
                   onClick={closeForm}
                   type="button"
                 >
-                  Cancelar
-                </button>
-                <button
-                  className="admin-button is-primary"
-                  disabled={isSaving}
-                  type="submit"
-                >
-                  {isSaving ? "Guardando..." : "Guardar tipo"}
+                  Cerrar
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         ) : null}
 
@@ -346,10 +291,10 @@ export function TiposActorSocialPage() {
                     <div className="admin-row-actions">
                       <button
                         className="admin-icon-button"
-                        onClick={() => openEditForm(record)}
+                        onClick={() => openDetails(record)}
                         type="button"
                       >
-                        Editar
+                        Ver
                       </button>
                       <button
                         className="admin-icon-button"

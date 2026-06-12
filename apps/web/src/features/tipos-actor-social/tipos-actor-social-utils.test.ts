@@ -73,4 +73,9 @@ describe("tipos-actor-social-utils", () => {
     expect(filterTiposActorSocial(dummyRecords, "U02")).toHaveLength(1);
     expect(filterTiposActorSocial(dummyRecords, "")).toHaveLength(2);
   });
+
+  it("filters records by status", () => {
+    expect(filterTiposActorSocial(dummyRecords, "", "active")).toHaveLength(1);
+    expect(filterTiposActorSocial(dummyRecords, "", "inactive")).toHaveLength(1);
+  });
 });
